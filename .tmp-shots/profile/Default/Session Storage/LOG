@@ -1,0 +1,74 @@
+2026/10/24-08:48:40.202 7904 Creating DB E:\PraiseHub\SongHub\.tmp-shots\profile\Default\Session Storage since it was missing.
+2026/10/24-08:48:40.212 7904 Reusing MANIFEST E:\PraiseHub\SongHub\.tmp-shots\profile\Default\Session Storage/MANIFEST-000001
+2026/10/24-08:49:56.097 7904 Level-0 table #5: started
+2026/10/24-08:49:56.101 7904 Level-0 table #5: 25070 bytes OK
+2026/10/24-08:49:56.103 7904 Delete type=0 #3
+2026/10/24-08:50:56.095 7904 Level-0 table #7: started
+2026/10/24-08:50:56.099 7904 Level-0 table #7: 25099 bytes OK
+2026/10/24-08:50:56.101 7904 Delete type=0 #4
+2026/10/24-08:52:02.354 4a98 Level-0 table #9: started
+2026/10/24-08:52:02.360 4a98 Level-0 table #9: 49986 bytes OK
+2026/10/24-08:52:02.363 4a98 Delete type=0 #6
+2026/10/24-08:52:56.109 7904 Level-0 table #11: started
+2026/10/24-08:52:56.116 7904 Level-0 table #11: 25163 bytes OK
+2026/10/24-08:52:56.120 7904 Delete type=0 #8
+2026/10/24-08:53:56.099 7904 Level-0 table #13: started
+2026/10/24-08:53:56.106 7904 Level-0 table #13: 25110 bytes OK
+2026/10/24-08:53:56.109 7904 Delete type=0 #10
+2026/10/24-08:55:08.738 4a98 Level-0 table #15: started
+2026/10/24-08:55:08.745 4a98 Level-0 table #15: 49866 bytes OK
+2026/10/24-08:55:08.747 4a98 Delete type=0 #12
+2026/10/24-08:55:08.747 4a98 Compacting 4@0 + 1@1 files
+2026/10/24-08:55:08.763 4a98 Generated table #16@0: 10 keys, 174365 bytes
+2026/10/24-08:55:08.763 4a98 Compacted 4@0 + 1@1 files => 174365 bytes
+2026/10/24-08:55:08.764 4a98 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/10/24-08:55:08.766 4a98 Delete type=2 #7
+2026/10/24-08:55:08.766 4a98 Delete type=2 #9
+2026/10/24-08:55:08.766 4a98 Delete type=2 #11
+2026/10/24-08:55:08.766 4a98 Delete type=2 #13
+2026/10/24-08:55:08.766 4a98 Delete type=2 #15
+2026/10/24-08:55:55.687 7904 Level-0 table #18: started
+2026/10/24-08:55:55.692 7904 Level-0 table #18: 25343 bytes OK
+2026/10/24-08:55:55.696 7904 Delete type=0 #14
+2026/10/24-08:57:28.511 4a98 Level-0 table #20: started
+2026/10/24-08:57:28.524 4a98 Level-0 table #20: 49937 bytes OK
+2026/10/24-08:57:28.526 4a98 Delete type=0 #17
+2026/10/24-08:58:20.480 4a98 Level-0 table #22: started
+2026/10/24-08:58:20.487 4a98 Level-0 table #22: 49568 bytes OK
+2026/10/24-08:58:20.489 4a98 Delete type=0 #19
+2026/10/24-08:58:46.996 4a98 Level-0 table #24: started
+2026/10/24-08:58:47.003 4a98 Level-0 table #24: 25019 bytes OK
+2026/10/24-08:58:47.005 4a98 Delete type=0 #21
+2026/10/24-08:58:47.006 4a98 Compacting 4@0 + 1@1 files
+2026/10/24-08:58:47.021 4a98 Generated table #25@0: 16 keys, 323367 bytes
+2026/10/24-08:58:47.021 4a98 Compacted 4@0 + 1@1 files => 323367 bytes
+2026/10/24-08:58:47.022 4a98 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/10/24-08:58:47.023 4a98 Delete type=2 #16
+2026/10/24-08:58:47.023 4a98 Delete type=2 #18
+2026/10/24-08:58:47.023 4a98 Delete type=2 #20
+2026/10/24-08:58:47.023 4a98 Delete type=2 #22
+2026/10/24-08:58:47.024 4a98 Delete type=2 #24
+2026/10/24-08:59:01.707 4a98 Level-0 table #27: started
+2026/10/24-08:59:01.713 4a98 Level-0 table #27: 24920 bytes OK
+2026/10/24-08:59:01.719 4a98 Delete type=0 #23
+2026/10/24-08:59:48.308 4a98 Level-0 table #29: started
+2026/10/24-08:59:48.316 4a98 Level-0 table #29: 25070 bytes OK
+2026/10/24-08:59:48.318 4a98 Delete type=0 #26
+2026/10/24-09:00:34.925 4a98 Level-0 table #31: started
+2026/10/24-09:00:34.929 4a98 Level-0 table #31: 25128 bytes OK
+2026/10/24-09:00:34.932 4a98 Delete type=0 #28
+2026/10/24-09:01:21.564 4a98 Level-0 table #33: started
+2026/10/24-09:01:21.574 4a98 Level-0 table #33: 24856 bytes OK
+2026/10/24-09:01:21.576 4a98 Delete type=0 #30
+2026/10/24-09:01:21.583 4a98 Compacting 4@0 + 1@1 files
+2026/10/24-09:01:21.657 4a98 Generated table #34@0: 20 keys, 422571 bytes
+2026/10/24-09:01:21.657 4a98 Compacted 4@0 + 1@1 files => 422571 bytes
+2026/10/24-09:01:21.657 4a98 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/10/24-09:01:21.658 4a98 Delete type=2 #25
+2026/10/24-09:01:21.658 4a98 Delete type=2 #27
+2026/10/24-09:01:21.658 4a98 Delete type=2 #29
+2026/10/24-09:01:21.659 4a98 Delete type=2 #31
+2026/10/24-09:01:21.659 4a98 Delete type=2 #33
+2026/10/24-09:02:08.160 4a98 Level-0 table #36: started
+2026/10/24-09:02:08.176 4a98 Level-0 table #36: 25150 bytes OK
+2026/10/24-09:02:08.179 4a98 Delete type=0 #32

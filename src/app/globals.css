@@ -1,21 +1,124 @@
 @import "tailwindcss";
 
+.font-telugu {
+  font-family: var(--font-noto-serif-telugu), serif;
+}
+
+.font-lato {
+  font-family: var(--font-inter), var(--font-noto-sans-telugu), sans-serif;
+}
+
+.font-song-title {
+  font-family: var(--font-merriweather), var(--font-noto-serif-telugu), serif;
+}
+
+.font-lyrics {
+  font-family: var(--font-merriweather), var(--font-noto-serif-telugu), serif;
+}
+
+/* ─────────────────────────────────────────────── */
+/* Dark theme (default)                          */
+/* ─────────────────────────────────────────────── */
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --card: #121212;
+  --card-hover: #1e1e1e;
+  --input: rgba(24, 24, 24, 0.8);
+  --canvas: #070707;
+  --line: #282828;
+  --line-muted: #181818;
+  --title: #ffffff;
+  --copy: #e5e7eb;
+  --muted: #a7a7a7;
+  --dim: #727272;
+  --handle: #b3b3b3;
+  --accent: #1db954;
+  --white: #ffffff;
+  --black: #000000;
+  --chip-bg: rgba(255, 255, 255, 0.08);
+  --chip-text: var(--title);
+  --overlay: rgba(0, 0, 0, 0.3);
+  --dropdown-bg: #181818;
+  --scrollbar-thumb: var(--line);
+}
+
+/* ─────────────────────────────────────────────── */
+/* Light theme                                    */
+/* ─────────────────────────────────────────────── */
+[data-theme="light"] {
+  --card: #ffffff;
+  --card-hover: #f3f4f6;
+  --input: #ffffff;
+  --canvas: #f9fafb;
+  --line: #e5e7eb;
+  --line-muted: #e5e7eb;
+  --title: #111827;
+  --copy: #374151;
+  --muted: #4b5563;
+  --dim: #6b7280;
+  --handle: #4b5563;
+  --accent: #1db954;
+  --white: #ffffff;
+  --black: #000000;
+  --chip-bg: rgba(0, 0, 0, 0.05);
+  --chip-text: var(--title);
+  --overlay: rgba(0, 0, 0, 0.08);
+  --dropdown-bg: #ffffff;
+  --scrollbar-thumb: #d1d5db;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-input: var(--input);
+  --color-canvas: var(--canvas);
+  --color-line: var(--line);
+  --color-line-muted: var(--line-muted);
+  --color-title: var(--title);
+  --color-copy: var(--copy);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-handle: var(--handle);
+  --color-accent: var(--accent);
+  --color-dropdown: var(--dropdown-bg);
+  --color-chip-bg: var(--chip-bg);
+  --color-chip-text: var(--chip-text);
+  --color-overlay: var(--overlay);
+  --font-sans: var(--font-inter), var(--font-noto-sans-telugu), sans-serif;
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-merriweather), var(--font-noto-serif-telugu), serif;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--title);
+  font-family: var(--font-inter), var(--font-noto-sans-telugu), sans-serif;
+  overflow: hidden;
+}
+
+/* Controlled smooth transitions during user-initiated theme toggles */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 0.25s ease-out, border-color 0.25s ease-out, color 0.25s ease-out !important;
+  transition-delay: 0s !important;
+}
+
+/* Modern View Transitions API animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
 }
 
 @keyframes bounce-bar {
@@ -34,4 +137,285 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@keyframes music-bar-1 {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+@keyframes music-bar-2 {
+  0%, 100% { height: 100%; }
+  50% { height: 40%; }
+}
+@keyframes music-bar-3 {
+  0%, 100% { height: 50%; }
+  50% { height: 90%; }
+}
+
+.animate-music-bar-1 {
+  animation: music-bar-1 0.8s ease-in-out infinite;
+}
+.animate-music-bar-2 {
+  animation: music-bar-2 0.7s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+.animate-music-bar-3 {
+  animation: music-bar-3 0.9s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--handle);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* ─────────────────────────────────────────────── */
+/* Auth Animations                               */
+/* ─────────────────────────────────────────────── */
+
+/* Fade in animation for auth modals */
+@keyframes auth-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-auth-in {
+  animation: auth-fade-in 0.3s ease-out forwards;
+}
+
+/* Success check animation */
+@keyframes auth-success-check {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-auth-success {
+  animation: auth-success-check 0.5s ease-out forwards;
+}
+
+/* Slide up for auth pages */
+@keyframes auth-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: auth-slide-up 0.35s ease-out forwards;
+}
+
+/* Auth input focus ring styles */
+input[type="text"]:focus-visible {
+  outline: 2px solid #D4A32A;
+  outline-offset: -2px;
+}
+
+/* Ensure no autofill background on auth inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #111111 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+}
+
+/* Gold accent glow for active states */
+.auth-gold-glow {
+  box-shadow: 0 0 20px rgba(212, 163, 42, 0.15), 0 0 40px rgba(212, 163, 42, 0.05);
+}
+
+/* Auth backdrop blur */
+.auth-backdrop {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ─────────────────────────────────────────────── */
+/* Landing / Welcome Screen                       */
+/* ─────────────────────────────────────────────── */
+
+/* Metallic gold title — light warm gold (#F5D485) at the top of each letter
+   deepening to amber gold (#D9A544) at the bottom, per the hero typography spec */
+.gold-title-text {
+  background: linear-gradient(180deg, #f5d485 0%, #eec264 40%, #d9a544 85%, #d9a544 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Soft golden ambient glow behind the logo that gently breathes — only the glow size changes */
+@keyframes landing-glow-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.landing-glow {
+  animation: landing-glow-pulse 6s ease-in-out infinite;
+}
+
+/* Extremely subtle vertical float (2–3px) for the logo — no tilting or zooming */
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.landing-float {
+  animation: landing-float 8s ease-in-out infinite;
+}
+
+/* Very faint diagonal light shimmer that sweeps once across the gold surface,
+   then rests — a soft reflective sheen, not a color or design change */
+@keyframes landing-shimmer {
+  0% {
+    background-position: 170% 0;
+  }
+  16% {
+    background-position: -70% 0;
+  }
+  100% {
+    background-position: -70% 0;
+  }
+}
+
+.landing-shimmer {
+  background-image: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 244, 214, 0.16) 50%,
+    transparent 58%
+  );
+  background-size: 240% 100%;
+  background-repeat: no-repeat;
+  mix-blend-mode: soft-light;
+  animation: landing-shimmer 7s ease-in-out infinite;
+}
+
+/* Staggered fade-up entrance */
+@keyframes landing-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-fade-up {
+  animation: landing-fade-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* CTA glassmorphism glow on hover */
+.landing-cta {
+  position: relative;
+  transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+.landing-cta:hover {
+  box-shadow: 0 0 45px rgba(212, 163, 42, 0.35), 0 0 90px rgba(212, 163, 42, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.landing-cta:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Voice Search Wave Animations */
+@keyframes voice-wave-grow {
+  0%, 100% { height: 8px; }
+  50% { height: 28px; }
+}
+
+.animate-voice-wave-1 {
+  animation: voice-wave-grow 0.8s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+.animate-voice-wave-2 {
+  animation: voice-wave-grow 0.8s ease-in-out infinite;
+  animation-delay: 0.25s;
+}
+.animate-voice-wave-3 {
+  animation: voice-wave-grow 0.8s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+.animate-voice-wave-4 {
+  animation: voice-wave-grow 0.8s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+.animate-voice-wave-5 {
+  animation: voice-wave-grow 0.8s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+/* Spiral Loading Spinner Animation */
+@keyframes spiral-dot {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-spiral-dot {
+  animation: spiral-dot 1.5s ease-in-out infinite;
 }

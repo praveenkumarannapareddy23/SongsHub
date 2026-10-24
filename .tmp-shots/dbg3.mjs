@@ -1,0 +1,16 @@
+const port = 9222;
+const url = process.argv[2];
+const list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+const page = list.find((t) => t.type === "page");
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+let id = 0; const pending = new Map();
+ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } });
+const send = (method, params = {}) => new Promise((res) => { const mid = ++id; pending.set(mid, res); ws.send(JSON.stringify({ id: mid, method, params })); });
+await new Promise((r) => ws.addEventListener("open", r));
+await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+await send("Page.enable");
+await send("Page.navigate", { url });
+await new Promise((r) => setTimeout(r, 9000));
+const res = await send("Runtime.evaluate", { expression: `({ effect: window.__lyrEffect, observed: window.__lyrObserved, debug: window.__lyrDebug && window.__lyrDebug.slice(0,5) })`, returnByValue: true });
+console.log(JSON.stringify(res.result.result.value, null, 2));
+ws.close();

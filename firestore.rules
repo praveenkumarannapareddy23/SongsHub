@@ -1,0 +1,165 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════════════
+// YouWorship — Cloud Firestore security rules
+// ═══════════════════════════════════════════════════════════════════
+// Deploy with:  firebase deploy --only firestore:rules
+//
+// Collections in use:
+//   youworship_songs            — song catalog (served via public API)
+//   bible_chapters              — daily Bible verses (public)
+//   Youworship_users/{uid}      — favorites / playlists / recently played
+//   Youworship_users/{uid}/devices/{deviceId}  — YouWorship Connect registry
+//   Youworship_requests         — song requests (public submissions)
+//   Youworship_feedback         — user feedback (public submissions)
+//
+// Admin accounts mirror the checks in src/lib/admin-firebase.js and
+// src/app/admin/page.js. For stronger security, replace the email check
+// with a custom claim (`token.admin == true`) on the admin accounts.
+// ═══════════════════════════════════════════════════════════════════
+
+function isAdmin() {
+  return request.auth != null && (
+    request.auth.token.email == 'alsaikumar22@gmail.com' ||
+    request.auth.token.email == 'control@youworship.world' ||
+    request.auth.token.email.endsWith('@youworship.admin') ||
+    request.auth.token.admin == true ||
+    get(/databases/$(database)/documents/Youworship_users/$(request.auth.uid)).data.role == 'admin'
+  );
+}
+
+function isOwner(uid) {
+  return request.auth != null && request.auth.uid == uid;
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ─────────────────────────────────────────────────────────────
+    // Public content — browsable without an account.
+    // ─────────────────────────────────────────────────────────────
+    match /youworship_songs/{songId} {
+      // Songs are public; the API also serves them.
+      allow read: if true;
+
+      // Clients only ever auto-save the YouTube-detected duration.
+      // Restrict updates to those two fields so users can't edit catalog data.
+      // Note: guests can't write here (auth required) — the duration auto-save
+      // is best-effort and fails silently via .catch() for guest sessions.
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['duration', 'updatedAt'])
+        && request.resource.data.duration is number
+        && request.resource.data.duration >= 0;
+
+      // Create/delete go through the Admin SDK API routes (rules bypassed server-side).
+      allow create, delete: if false;
+    }
+
+    // Daily Bible verses shown to everyone.
+    match /bible_chapters/{chapterId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // User data — owner-only, with admin override.
+    // ─────────────────────────────────────────────────────────────
+    match /Youworship_users/{uid} {
+      // Favorites, playlists, recently played (src/lib/firestore-service.js)
+      allow read, write: if isOwner(uid) || isAdmin();
+
+      // ─── Subcollections: Playlists & Recently Played ─────────
+      match /playlists/{playlistId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /recentlyPlayed/{songId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      // ─── YouWorship Connect — device registry ────────────────
+      // Devices register after login, sync presence/playback state,
+      // and discover each other — all within the same account.
+      // Admins list all devices and can rename/remove/force-logout.
+      match /devices/{deviceId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Collaborative Playlists — Shared Multi-User Playlists
+    // ─────────────────────────────────────────────────────────────
+    match /playlists/{playlistId} {
+      function isPlaylistOwner() {
+        return request.auth != null && (
+          resource.data.ownerId == request.auth.uid ||
+          request.resource.data.ownerId == request.auth.uid
+        );
+      }
+
+      function isPlaylistEditor() {
+        return request.auth != null && (
+          resource.data.ownerId == request.auth.uid ||
+          (resource.data.collaborators != null && (
+            resource.data.collaborators[request.auth.uid] == 'editor' ||
+            resource.data.collaborators[request.auth.uid].role == 'editor'
+          ))
+        );
+      }
+
+      function isPlaylistCollaborator() {
+        return request.auth != null && (
+          resource.data.ownerId == request.auth.uid ||
+          (resource.data.collaborators != null && resource.data.collaborators[request.auth.uid] != null) ||
+          (resource.data.collaboratorUids != null && request.auth.uid in resource.data.collaboratorUids)
+        );
+      }
+
+      // Read: Allowed for authenticated users (collaborators, owners, or joiners via share link) or admin
+      allow read: if request.auth != null || isAdmin();
+
+      // Create: Authenticated user creating their own playlist
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+
+      // Update:
+      // 1. Owner/Admin: Full update permissions
+      // 2. Editor: Can modify songIds, songAddedBy, and updatedAt
+      // 3. Authenticated Joiner: Can add themselves to collaborators
+      allow update: if request.auth != null && (
+        isAdmin() ||
+        isPlaylistOwner() ||
+        (
+          isPlaylistEditor() &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['songIds', 'songAddedBy', 'updatedAt'])
+        ) ||
+        (
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['collaborators', 'collaboratorUids', 'updatedAt'])
+        )
+      );
+
+      // Delete: Owner or Admin only
+      allow delete: if request.auth != null && (isPlaylistOwner() || isAdmin());
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Public submissions — "Talk to us" drawer works for guests too.
+    // ─────────────────────────────────────────────────────────────
+    match /Youworship_requests/{docId} {
+      allow create: if (request.auth == null || request.auth.uid != null)
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0;
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /Youworship_feedback/{docId} {
+      allow create: if (request.auth == null || request.auth.uid != null)
+        && request.resource.data.category is string
+        && request.resource.data.category.size() > 0;
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+  }
+}

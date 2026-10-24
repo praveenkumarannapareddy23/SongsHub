@@ -1,0 +1,26 @@
+const port = 9222;
+const url = process.argv[2];
+const list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+const page = list.find((t) => t.type === "page");
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+let id = 0; const pending = new Map();
+ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } });
+const send = (method, params = {}) => new Promise((res) => { const mid = ++id; pending.set(mid, res); ws.send(JSON.stringify({ id: mid, method, params })); });
+await new Promise((r) => ws.addEventListener("open", r));
+await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+await send("Page.enable");
+await send("Page.navigate", { url });
+await new Promise((r) => setTimeout(r, 8000));
+const probe = `(() => {
+  const root = [...document.querySelectorAll('div')].find(el => typeof el.className === 'string' && el.className.includes('font-sans') && el.className.includes('overflow-y-auto') && el.className.includes('bg-card'));
+  const ps = root ? [...root.querySelectorAll('p')] : [];
+  const active = ps.find(p => p.className.includes('D4A32A'));
+  return { scrollTop: root && root.scrollTop, lines: ps.length, activeText: active ? active.textContent.slice(0,20) : null, activeCount: ps.filter(p => p.className.includes('D4A32A')).length };
+})()`;
+let res = await send("Runtime.evaluate", { expression: probe, returnByValue: true });
+console.log("initial", JSON.stringify(res.result.result.value));
+await send("Runtime.evaluate", { expression: `(() => { const root = [...document.querySelectorAll('div')].find(el => typeof el.className === 'string' && el.className.includes('font-sans') && el.className.includes('overflow-y-auto') && el.className.includes('bg-card')); if (root) root.scrollTop = 120; })()` });
+await new Promise((r) => setTimeout(r, 800));
+res = await send("Runtime.evaluate", { expression: probe, returnByValue: true });
+console.log("after scroll", JSON.stringify(res.result.result.value));
+ws.close();

@@ -1,0 +1,22 @@
+const port = 9222;
+const list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+const page = list.find((t) => t.type === "page");
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+let id = 0; const pending = new Map(); const logs = [];
+ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } if (m.method === "Runtime.consoleAPICalled") logs.push(m.params.type + ": " + m.params.args.map(a=>a.value??a.description??"").join(" ")); if (m.method === "Runtime.exceptionThrown") logs.push("EXC: " + (m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text)); });
+const send = (method, params = {}) => new Promise((res) => { const mid = ++id; pending.set(mid, res); ws.send(JSON.stringify({ id: mid, method, params })); });
+await new Promise((r) => ws.addEventListener("open", r));
+await send("Runtime.enable");
+const res = await send("Runtime.evaluate", { awaitPromise: true, returnByValue: true, expression: `(async () => {
+  const root = [...document.querySelectorAll('div')].find(el => typeof el.className === 'string' && el.className.includes('font-sans') && el.className.includes('overflow-y-auto') && el.className.includes('bg-card'));
+  const targets = [...root.querySelectorAll('[data-line-index]')];
+  const hits = [];
+  const obs = new IntersectionObserver((entries) => { for (const e of entries) if (e.isIntersecting) hits.push(e.target.getAttribute('data-line-index')); }, { root, rootMargin: '-35% 0px -35% 0px', threshold: 0 });
+  targets.forEach(t => obs.observe(t));
+  await new Promise(r => setTimeout(r, 1200));
+  obs.disconnect();
+  return { rootFound: !!root, targets: targets.length, hits, rootRect: root.getBoundingClientRect().toJSON() };
+})()` });
+console.log(JSON.stringify(res.result.result.value, null, 2));
+console.log("LOGS", logs.slice(0,8));
+ws.close();
